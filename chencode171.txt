@@ -1,0 +1,45 @@
+#include<C8051F340.h>
+
+int cnt = 0;
+char table[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F,0x6F};
+
+void MVP(unsigned long x)
+{
+ while(x--);
+}
+
+void main()
+{
+	PCA0MD    &= ~0x40;
+    PCA0MD    = 0x00;
+    TCON      = 0x05;
+    P1MDOUT   = 0xFF;
+    XBR1      = 0x40;
+    IT01CF    = 0x10;
+    IE        = 0x85;
+	P1 = table[0];
+	while(1);
+
+}
+
+void cntUP() interrupt 0
+{
+	if(cnt <= 9){
+	cnt++;
+	P1 = table[cnt];
+	MVP(25000);
+	}
+}
+
+void cntDOWN() interrupt 2
+{
+
+	if(cnt > 0)
+	{
+	cnt--;
+	P1 = table[cnt];
+	MVP(25000);
+	}
+	
+	
+}
